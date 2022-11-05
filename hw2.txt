@@ -1,0 +1,191 @@
+Script started on Fri 07 Oct 2022 02:12:46 PM MST
+[01;34m#=======================================================================#
+[1;36m                  Embry-Riddle Aeronautical University         
+[01;34m#=======================================================================#
+[01;37m  HOSTNAME =[1;36m prclab1.erau.edu  
+[01;37m  LOCATION =[01;32m Prescott                      
+[01;37m  USER     =[01;35m chrisj60                      
+[01;37m  UPTIME   =[01;33m 319 days, 5 hours, 56, 12 users minutes  
+[01;37m  IP       = [2;36m172.19.241.11  
+[01;37m  OS       = [01;31mOracle Linux Server release 7.8  
+[01;37m  ARCH     = x86_64                     
+[01;37m  KERNEL   = 4.14.35-2047.508.3.el7uek.x86_64                   
+[01;37m  UPTRACK  = 4.14.35-2047.515.3.el7uek.x86_64                   
+[01;37m  Date     = Fri Oct  7 14:12:46 MST 2022                   
+[01;34m  CPUCORES = 6 [01;34m                                    CPU_AVG  = 0%
+[021;32m  MEMORY (total) = 7686 Mb     [01;32m                      MEM_AVG  = 21%
+[021;32m  SWAP (total)   = 4091 Mb [01;32m                     SWAP_AVG = 5%  
+[01;37m  LOAD AVERAGE  = [01;35m0.05, 0.02, 0.00                      
+[01;34m#=======================================================================#[0m
+
+             [01;31mUNAUTHORIZED ACCESS TO THIS SYSTEM IS PROHIBITED.
+[01;37mAccess to this system is restricted to authorized users only. Unauthorized
+[01;37maccess, use, or modification of this system, or any data stored therein is
+[01;37mstrictly prohibited by University policies and applicable law.
+
+ [01;31m** [01;33mIf you are not authorized to access this system, exit immediately! [01;31m**
+
+[01;37mUsers of this system expressly consent to activity monitoring. Unauthorized
+[01;37musers may be subject to administrative, criminal, or other legal action.
+
+]0;chrisj60@prclab1:~/CS315/CS315_Homework[?1034h[[01;35mchrisj60[m[01;33m@[m[01;36mprclab1[m:[01;33m~/CS315/CS315_Homework[m][31m$[m gcc hw2_JacobChristensen.c
+]0;chrisj60@prclab1:~/CS315/CS315_Homework[[01;35mchrisj60[m[01;33m@[m[01;36mprclab1[m:[01;33m~/CS315/CS315_Homework[m][31m$[m cat hw2_JacobChristensen.c
+/******************************************************************
+ * Author:       Jacob M. Christensen
+ * Course:       CS315
+ * Assignment:   Homework #2
+ * Purpose:      Queue algorithm implemented in a circular list.
+******************************************************************/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+// Initializing Queue Node Structure
+typedef struct QueueNode
+{
+    char userData;
+    struct QueueNode *nextPtr;
+} QUEUE_NODE;
+
+// Prototype Functions
+void insertNode(QUEUE_NODE **mainPtr);
+void removeNode(QUEUE_NODE **mainPtr);
+
+/*****************************************************************/
+int main()
+{
+    QUEUE_NODE *mainPtr = NULL;
+    char userInput;
+    bool continueLoop = true;
+
+    while(continueLoop) {
+
+        printf("Insert[I]   Remove[R]   Quit[Q]: ");
+        scanf(" %c", &userInput);
+
+        switch(userInput) {
+
+        case 'I':
+            insertNode(&mainPtr);
+            break;
+
+        case 'R':
+            removeNode(&mainPtr);
+            break;
+        
+        case 'Q':
+            continueLoop = false;
+            break;
+
+        default:
+            printf("Invalid Entry\n");
+            break;
+        }
+    }
+    return 0;
+}
+
+/*****************************************************************/
+/****************** INSERT NEW ELEMENT IN QUEUE ******************/
+/*****************************************************************/
+void insertNode(QUEUE_NODE **mainPtr)
+{
+    QUEUE_NODE *insertionPtr = malloc(sizeof(QUEUE_NODE));
+
+    printf("Enter Character to Insert: ");
+    scanf(" %c", &(insertionPtr->userData));
+    printf("\n");
+
+    // Special Case: If Queue is Empty, Point Back to Self
+    if ((*mainPtr) == NULL) {
+
+        insertionPtr->nextPtr = insertionPtr;
+        (*mainPtr) = insertionPtr;
+    }
+    // Normal Insertion
+    else {
+
+        insertionPtr->nextPtr = (*mainPtr)->nextPtr;
+        (*mainPtr)->nextPtr = insertionPtr;
+        (*mainPtr) = insertionPtr;
+    }
+}
+
+/*****************************************************************/
+/******************* REMOVE ELEMENT FROM QUEUE *******************/
+/*****************************************************************/
+void removeNode(QUEUE_NODE **mainPtr)
+{
+    QUEUE_NODE *deletionPtr = NULL;
+
+    // Error if Queue is Empty
+    if ((*mainPtr) == NULL) {
+
+        printf("Cannot remove from an empty queue\n\n");
+    }
+    // Else, Deletion Logic...
+    else {
+
+        deletionPtr = (*mainPtr)->nextPtr;
+        // Special Case: Only One Element in Queue
+        if (deletionPtr == (*mainPtr)) {
+
+            printf("Removing %c from queue...\n\n", deletionPtr->userData);
+            (*mainPtr) = NULL;
+            free(deletionPtr);
+        }
+        // Normal Deletion
+        else {
+
+            printf("Removing %c from queue...\n\n", deletionPtr->userData);
+            (*mainPtr)->nextPtr = (*mainPtr)->nextPtr->nextPtr;
+            free(deletionPtr);
+        }
+    }
+}
+]0;chrisj60@prclab1:~/CS315/CS315_Homework[[01;35mchrisj60[m[01;33m@[m[01;36mprclab1[m:[01;33m~/CS315/CS315_Homework[m][31m$[m a.out
+Insert[I]   Remove[R]   Quit[Q]: R
+Cannot remove from an empty queue
+
+Insert[I]   Remove[R]   Quit[Q]: I
+Enter Character to Insert: A
+
+Insert[I]   Remove[R]   Quit[Q]: R
+Removing A from queue...
+
+Insert[I]   Remove[R]   Quit[Q]: R
+Cannot remove from an empty queue
+
+Insert[I]   Remove[R]   Quit[Q]: I
+Enter Character to Insert: B
+
+Insert[I]   Remove[R]   Quit[Q]: I
+Enter Character to Insert: F
+
+Insert[I]   Remove[R]   Quit[Q]: R
+Removing B from queue...
+
+Insert[I]   Remove[R]   Quit[Q]: I
+Enter Character to Insert: D
+
+Insert[I]   Remove[R]   Quit[Q]: I
+Enter Character to Insert: C
+
+Insert[I]   Remove[R]   Quit[Q]: R
+Removing F from queue...
+
+Insert[I]   Remove[R]   Quit[Q]: R
+Removing D from queue...
+
+Insert[I]   Remove[R]   Quit[Q]: R
+Removing C from queue...
+
+Insert[I]   Remove[R]   Quit[Q]: R
+Cannot remove from an empty queue
+
+Insert[I]   Remove[R]   Quit[Q]: Q
+]0;chrisj60@prclab1:~/CS315/CS315_Homework[[01;35mchrisj60[m[01;33m@[m[01;36mprclab1[m:[01;33m~/CS315/CS315_Homework[m][31m$[m exit
+exit
+
+Script done on Fri 07 Oct 2022 02:13:44 PM MST

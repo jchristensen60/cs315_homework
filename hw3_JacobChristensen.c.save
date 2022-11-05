@@ -1,0 +1,121 @@
+/**********************************************************************************************
+ * Author:      Jacob M. Christensen
+ * Course:      CS315
+ * Assignment:  Homework #3
+ * Purpose:     Implement four operations for a binary search tree implemented via pointers.
+ *                  - Insert
+ *                  - In-order traversal
+ *                  - Pre-order traversal
+ *                  - Find
+**********************************************************************************************/
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<stdbool.h>
+
+// Initializing Binary Tree Node Structure
+typedef struct BinaryTreeNode
+{
+    int data;
+    struct BinaryTreeNode *leftChild;
+    struct BinaryTreeNode *rightChild;
+} BINARY_TREE_NODE;
+
+// Prototype Functions
+void insert(BINARY_TREE_NODE **rootPtr);
+void inOrderTraverse(BINARY_TREE_NODE **rootPtr);
+void preOrderTraverse(BINARY_TREE_NODE **rootPtr);
+void find(BINARY_TREE_NODE **rootPtr);
+
+/*********************************************************************************************/
+int main()
+{
+    BINARY_TREE_NODE *rootPtr = NULL;
+    int userInput = 0;
+    bool continueLoop = true;
+
+    do {
+
+        printf("------------------------------------------------------------------------------------\n"
+               "Insert[1]   In-Order Traverse[2]    Pre-Order Traverse[3]     Find[4]     Quit[5]: ");
+        scanf("%d", &userInput);
+
+        switch (userInput) {
+
+        case 1:
+            insert(&rootPtr);
+            break;
+        
+        case 2:
+            inOrderTraverse(&rootPtr);
+            break;
+        
+        case 3:
+            preOrderTraverse(&rootPtr);
+            break;
+
+        case 4:
+            find(&rootPtr);
+            break;
+
+        case 5:
+            continueLoop = false;
+            break;
+
+        default:
+            printf(" *** Invalid Entry ***\n");
+            break;
+        }
+
+    } while (continueLoop);
+
+    return 0;
+}
+
+/*********************************************************************************************/
+void insert(BINARY_TREE_NODE **rootPtr)
+{
+    BINARY_TREE_NODE *insertionPtr = malloc(sizeof(BINARY_TREE_NODE));
+    BINARY_TREE_NODE *travelPtr = (*rootPtr);
+
+    bool continueLoop = true;
+
+    printf("Enter Integer to Insert: ");
+    scanf("%d", &(insertionPtr->data));
+    printf("\n");
+    
+    if ((*rootPtr) == NULL) {
+        (*rootPtr) = insertionPtr;
+    }
+    else if (travelPtr->leftChild == travelPtr->rightChild == NULL) {
+
+    }
+    else {
+        while (travelPtr->leftChild != NULL || travelPtr->rightChild != NULL) {
+            if (insertionPtr->data <= travelPtr->data) {
+
+            }
+            else {
+
+            }
+        }
+    }
+}
+
+/*********************************************************************************************/
+void inOrderTraverse()
+{
+
+}
+
+/*********************************************************************************************/
+void preOrderTraverse()
+{
+
+}
+
+/*********************************************************************************************/
+void find()
+{
+    BINARY_TREE_NODE *travelPtr = (*rootPtr);
+}

@@ -3,7 +3,7 @@
 * Course:       CS315
 * Assignment:   Homework #1
 * Purpose:      Creating a basic linked list that sorts integers in ascending 
-* 		order.
+* 		        order.
 ********************************************************************************/
 
 #include <stdio.h>
@@ -25,75 +25,85 @@ void printList(ORDERED_LIST *lead);
 /*******************************************************************************/
 int main()
 {
-    // initialize variables
+    // Initialize variables
     ORDERED_LIST *start = NULL, *lead = NULL;
-    int insertInput = 0, deleteInput = 0;
+    int userInput = 0;
     bool continueLoop = true;
 
-    // Loop inserting integers to linked list
+    // Insertion loop -- Entering zero sets loop to FALSE
     while(continueLoop)
     {
-        lead = start;
         printf("Enter an integer: ");
-        scanf("%d", &insertInput);
-        if(insertInput == 0)
+        scanf("%d", &userInput);
+        if(userInput == 0)
         {
             continueLoop = false;
         }
         else
-        {   
-            lead = (start = insertInt(start, lead, insertInput));
+        {
+            lead = (start = insertInt(start, lead, userInput));
         }
     }
-    printf("Ok, here's your list in numeric order: ");
-    printList(lead);
 
-    // Loop deleting integers from linked list
+    // Check if list is empty, if TRUE terminate program
     continueLoop = true;
-    while(continueLoop)
+    if(start == NULL)
     {
-        lead = start;
-        printf("Enter integer to delete: ");
-        scanf("%d", &deleteInput);
-        if(deleteInput == 0)
-        {
-            continueLoop = false;
-        }
-        else if(searchInt(lead, deleteInput) == false)
-        {
-            printf("Can't delete, %d isn't in the list.\n", deleteInput);
-        }
-        else
-        {
-            lead = (start = deleteInt(start, lead, deleteInput));
-        }
+        printf("Your list is empty\n");
     }
-    printf("Modified list in numeric order: ");
-    printList(lead);
-    printf("Bye.\n");
+    else
+    {
+        printf("Ok, here's your list in numeric order: ");
+        printList(lead);
+        // Deletion loop -- Entering zero sets loop to FALSE
+        while(continueLoop)
+        {
+            printf("Enter integer to delete: ");
+            scanf("%d", &userInput);
+            if(userInput == 0)
+            {
+                continueLoop = false;
+            }
+            // Cannot find integer to delete
+            else if(searchInt(lead, userInput) == false)
+            {
+                printf("Can't delete, %d isn't in the list.\n", userInput);
+            }
+            // Delete selected integer
+            else
+            {
+                lead = (start = deleteInt(start, lead, userInput));
+                printf("Modified list: ");
+                printList(lead);
+            }
+        }
+        printf("Bye.\n");
+    }
     return 0;
 }
 
 /*******************************************************************************/
+/************************ INSERT SPECIFIED NODE TO LIST ************************/
+/*******************************************************************************/
 ORDERED_LIST *insertInt(ORDERED_LIST *start, ORDERED_LIST *lead, int intToInsert)
 {
-    // initializing variables
+    // Initialize variables
     ORDERED_LIST *insertPtr = malloc(sizeof(ORDERED_LIST));
     insertPtr->UserData = intToInsert;
 
-    // if list is empty
+    // List is empty
     if(start == NULL)
     {
         insertPtr->next = start;
         start = insertPtr;
     }
-    // if element is first in list
+    // Element to insert is first in list
     else if(start->UserData >= insertPtr->UserData)
     {
         insertPtr->next = start;
         start = insertPtr;
     }
-    // if one or more elements in list
+    // Insert integer in list
     else
     {
         while(lead->next != NULL && lead->next->UserData <= intToInsert)
@@ -107,22 +117,26 @@ ORDERED_LIST *insertInt(ORDERED_LIST *start, ORDERED_LIST *lead, int intToInsert
 }
 
 /*******************************************************************************/
+/*********************** DELETE SPECIFIED NODE FROM LIST ***********************/
+/*******************************************************************************/
 ORDERED_LIST *deleteInt(ORDERED_LIST *start, ORDERED_LIST *lead, int intToDelete)
 {
-    // initialize variables
+    // Initialize variables
     ORDERED_LIST *trail = start;
     lead = start->next;
 
-    // if list is empty
+    // List is empty
     if(start == NULL)
     {
         printf("Can't delete, the list is empty.\n");
     }
+    // Integer to delete is first in list
     else if(start->UserData == intToDelete)
     {
         free(start);
         start = lead;
     }
+    // Delete integer from list, free allocated memory
     else
     {
         while(lead->UserData != intToDelete)
@@ -133,8 +147,11 @@ ORDERED_LIST *deleteInt(ORDERED_LIST *start, ORDERED_LIST *lead, int intToDelete
         trail->next = lead->next;
         free(lead);
     }
+    return start;
 }
 
+/*******************************************************************************/
+/********************** SEARCH FOR SPECIFIED NODE IN LIST **********************/
 /*******************************************************************************/
 bool searchInt(ORDERED_LIST *lead, int intToSearch)
 {
@@ -146,13 +163,12 @@ bool searchInt(ORDERED_LIST *lead, int intToSearch)
             found = true;
             break;
         }
-        else
-        {
-            lead = lead->next;
-        }
+        lead = lead->next;
     }
-    return found?true:false;
+    return found;
 }
+/*******************************************************************************/
+/*********************** PRINT ALL NODES FROM LINKED LIST **********************/
 /*******************************************************************************/
 void printList(ORDERED_LIST *lead)
 {

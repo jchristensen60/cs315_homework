@@ -1,0 +1,246 @@
+Script started on Thu 08 Sep 2022 11:03:53 AM MST
+[01;34m#=======================================================================#
+[1;36m                  Embry-Riddle Aeronautical University         
+[01;34m#=======================================================================#
+[01;37m  HOSTNAME =[1;36m prclab1.erau.edu  
+[01;37m  LOCATION =[01;32m Prescott                      
+[01;37m  USER     =[01;35m chrisj60                      
+[01;37m  UPTIME   =[01;33m 290 days, 2 hours, 48, 12 users minutes  
+[01;37m  IP       = [2;36m172.19.241.11  
+[01;37m  OS       = [01;31mOracle Linux Server release 7.8  
+[01;37m  ARCH     = x86_64                     
+[01;37m  KERNEL   = 4.14.35-2047.508.3.el7uek.x86_64                   
+[01;37m  UPTRACK  = 4.14.35-2047.515.3.el7uek.x86_64                   
+[01;37m  Date     = Thu Sep  8 11:03:54 MST 2022                   
+[01;34m  CPUCORES = 6 [01;34m                                    CPU_AVG  = 0%
+[021;32m  MEMORY (total) = 7686 Mb     [01;32m                      MEM_AVG  = 15%
+[021;32m  SWAP (total)   = 4091 Mb [01;32m                     SWAP_AVG = 6%  
+[01;37m  LOAD AVERAGE  = [01;35m0.24, 0.18, 0.18                      
+[01;34m#=======================================================================#[0m
+
+             [01;31mUNAUTHORIZED ACCESS TO THIS SYSTEM IS PROHIBITED.
+[01;37mAccess to this system is restricted to authorized users only. Unauthorized
+[01;37maccess, use, or modification of this system, or any data stored therein is
+[01;37mstrictly prohibited by University policies and applicable law.
+
+ [01;31m** [01;33mIf you are not authorized to access this system, exit immediately! [01;31m**
+
+[01;37mUsers of this system expressly consent to activity monitoring. Unauthorized
+[01;37musers may be subject to administrative, criminal, or other legal action.
+
+]0;chrisj60@prclab1:~/CS315/CS315_Homework[?1034h[[01;35mchrisj60[m[01;33m@[m[01;36mprclab1[m:[01;33m~/CS315/CS315_Homework[m][31m$[m cat hw1_JacobChristensen.c
+/********************************************************************************
+* Author:       Jacob M. Christensen
+* Course:       CS315
+* Assignment:   Homework #1
+* Purpose:      Creating a basic linked list that sorts integers in ascending 
+* 		        order.
+********************************************************************************/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+typedef struct OrderedList
+{
+    int UserData;
+    struct OrderedList *next;
+} ORDERED_LIST;
+
+// Prototype Functions
+ORDERED_LIST *insertInt(ORDERED_LIST *start, ORDERED_LIST *lead, int intToInsert);
+ORDERED_LIST *deleteInt(ORDERED_LIST *start, ORDERED_LIST *lead, int intToDelete);
+bool searchInt(ORDERED_LIST *lead, int intToSearch);
+void printList(ORDERED_LIST *lead);
+
+/*******************************************************************************/
+int main()
+{
+    // Initialize variables
+    ORDERED_LIST *start = NULL, *lead = NULL;
+    int userInput = 0;
+    bool continueLoop = true;
+
+    // Insertion loop -- Entering zero sets loop to FALSE
+    while(continueLoop)
+    {
+        printf("Enter an integer: ");
+        scanf("%d", &userInput);
+        if(userInput == 0)
+        {
+            continueLoop = false;
+        }
+        else
+        {
+            lead = (start = insertInt(start, lead, userInput));
+        }
+    }
+
+    // Check if list is empty, if TRUE terminate program
+    continueLoop = true;
+    if(start == NULL)
+    {
+        printf("Your list is empty\n");
+    }
+    else
+    {
+        printf("Ok, here's your list in numeric order: ");
+        printList(lead);
+        // Deletion loop -- Entering zero sets loop to FALSE
+        while(continueLoop)
+        {
+            printf("Enter integer to delete: ");
+            scanf("%d", &userInput);
+            if(userInput == 0)
+            {
+                continueLoop = false;
+            }
+            // Cannot find integer to delete
+            else if(searchInt(lead, userInput) == false)
+            {
+                printf("Can't delete, %d isn't in the list.\n", userInput);
+            }
+            // Delete selected integer
+            else
+            {
+                lead = (start = deleteInt(start, lead, userInput));
+                printf("Modified list: ");
+                printList(lead);
+            }
+        }
+        printf("Bye.\n");
+    }
+    return 0;
+}
+
+/*******************************************************************************/
+/************************ INSERT SPECIFIED NODE TO LIST ************************/
+/*******************************************************************************/
+ORDERED_LIST *insertInt(ORDERED_LIST *start, ORDERED_LIST *lead, int intToInsert)
+{
+    // Initialize variables
+    ORDERED_LIST *insertPtr = malloc(sizeof(ORDERED_LIST));
+    insertPtr->UserData = intToInsert;
+
+    // List is empty
+    if(start == NULL)
+    {
+        insertPtr->next = start;
+        start = insertPtr;
+    }
+    // Element to insert is first in list
+    else if(start->UserData >= insertPtr->UserData)
+    {
+        insertPtr->next = start;
+        start = insertPtr;
+    }
+    // Insert integer in list
+    else
+    {
+        while(lead->next != NULL && lead->next->UserData <= intToInsert)
+        {
+            lead = lead->next;
+        }
+        insertPtr->next = lead->next;
+        lead->next = insertPtr;
+    }
+    return start;
+}
+
+/*******************************************************************************/
+/*********************** DELETE SPECIFIED NODE FROM LIST ***********************/
+/*******************************************************************************/
+ORDERED_LIST *deleteInt(ORDERED_LIST *start, ORDERED_LIST *lead, int intToDelete)
+{
+    // Initialize variables
+    ORDERED_LIST *trail = start;
+    lead = start->next;
+
+    // List is empty
+    if(start == NULL)
+    {
+        printf("Can't delete, the list is empty.\n");
+    }
+    // Integer to delete is first in list
+    else if(start->UserData == intToDelete)
+    {
+        free(start);
+        start = lead;
+    }
+    // Delete integer from list, free allocated memory
+    else
+    {
+        while(lead->UserData != intToDelete)
+        {
+            lead = lead->next;
+            trail = trail->next;
+        }
+        trail->next = lead->next;
+        free(lead);
+    }
+    return start;
+}
+
+/*******************************************************************************/
+/********************** SEARCH FOR SPECIFIED NODE IN LIST **********************/
+/*******************************************************************************/
+bool searchInt(ORDERED_LIST *lead, int intToSearch)
+{
+    bool found = false;
+    while(lead != NULL)
+    {
+        if(lead->UserData == intToSearch)
+        {
+            found = true;
+            break;
+        }
+        lead = lead->next;
+    }
+    return found;
+}
+/*******************************************************************************/
+/*********************** PRINT ALL NODES FROM LINKED LIST **********************/
+/*******************************************************************************/
+void printList(ORDERED_LIST *lead)
+{
+    while(lead != NULL)
+    {
+        printf("%d ", lead->UserData);
+        lead = lead->next;
+    }
+    printf("\n");
+}
+]0;chrisj60@prclab1:~/CS315/CS315_Homework[[01;35mchrisj60[m[01;33m@[m[01;36mprclab1[m:[01;33m~/CS315/CS315_Homework[m][31m$[m gcc hw1_JacobChristensen.c
+]0;chrisj60@prclab1:~/CS315/CS315_Homework[[01;35mchrisj60[m[01;33m@[m[01;36mprclab1[m:[01;33m~/CS315/CS315_Homework[m][31m$[m a.out
+Enter an integer: 0
+Your list is empty
+]0;chrisj60@prclab1:~/CS315/CS315_Homework[[01;35mchrisj60[m[01;33m@[m[01;36mprclab1[m:[01;33m~/CS315/CS315_Homework[m][31m$[m a.out
+Enter an integer: 5
+Enter an integer: 0
+Ok, here's your list in numeric order: 5 
+Enter integer to delete: 0
+Bye.
+]0;chrisj60@prclab1:~/CS315/CS315_Homework[[01;35mchrisj60[m[01;33m@[m[01;36mprclab1[m:[01;33m~/CS315/CS315_Homework[m][31m$[m a.out
+Enter an integer: 23
+Enter an integer: -2
+Enter an integer: 5
+Enter an integer: 37
+Enter an integer: 22
+Enter an integer: 0
+Ok, here's your list in numeric order: -2 5 22 23 37 
+Enter integer to delete: 23
+Modified list: -2 5 22 37 
+Enter integer to delete: 18
+Can't delete, 18 isn't in the list.
+Enter integer to delete: -2
+Modified list: 5 22 37 
+Enter integer to delete: 37
+Modified list: 5 22 
+Enter integer to delete: -6
+Can't delete, -6 isn't in the list.
+Enter integer to delete: 0
+Bye.
+]0;chrisj60@prclab1:~/CS315/CS315_Homework[[01;35mchrisj60[m[01;33m@[m[01;36mprclab1[m:[01;33m~/CS315/CS315_Homework[m][31m$[m exit
+exit
+
+Script done on Thu 08 Sep 2022 11:04:58 AM MST
